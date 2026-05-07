@@ -7,7 +7,11 @@ authors = [
     { name = "Maksim Afanasyev", email = "mr.applexz@gmail.com" }
 ]
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "openai>=2.0.0",
+    "pydantic>=2.0.0",
+    "pydantic-xml>=2.18.0",
+]
 
 [build-system]
 requires = ["uv_build>=0.11.7,<0.12.0"]
