@@ -1,0 +1,74 @@
+# Parsers
+
+Parsers validate and convert LLM responses back into typed Pydantic models.
+
+## Auto-detection
+
+Use `auto_parser_for_type` to automatically select the right parser:
+
+```python
+from sintezi.ai.parser import auto_parser_for_type
+
+parser = auto_parser_for_type(MyResponseModel)
+```
+
+## Available parsers
+
+### JSON (default)
+
+```python
+from sintezi.ai.parser import JsonParser
+
+parser = JsonParser(model=MyResponseModel)
+```
+
+Works with OpenAI's `response_format` for structured outputs.
+
+### XML
+
+```python
+from sintezi.ai.parser import XmlParser
+
+parser = XmlParser(model=MyResponseModel)
+```
+
+Requires `pydantic-xml`.
+
+### Plain text
+
+```python
+from sintezi.ai.parser import StrParser
+
+parser = StrParser()
+```
+
+For simple string responses.
+
+## Validation
+
+All parsers automatically validate responses against your Pydantic schema. If validation fails, a `ValueError` is raised and the retry policy handles it.
+
+## Custom parsers
+
+Implement `ResponseParser[T]`:
+
+```python
+from sintezi.ai.parser import ResponseParser, ResponseFormatCapability
+from typing import TypeVar
+
+T = TypeVar("T")
+
+class MyCustomParser(ResponseParser[T]):
+    def validate(self, content: str) -> T:
+        # Parse and validate content
+        return self.model.model_validate_json(content)
+    
+    def to_response_format(self, capabilities: set[ResponseFormatCapability]) -> dict | None:
+        # Return OpenAI response_format config or None
+        return None
+```
+
+## Next steps
+
+- [Formatters](formatters.md) — input formatting
+- [Retry policies](retry.md) — handling validation failures
