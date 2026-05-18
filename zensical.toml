@@ -13,6 +13,7 @@ nav = [
     { "Home" = "index.md" },
     { "Guide" = [
         { "Quick start" = "guide/quickstart.md" },
+        { "Executors" = "guide/executors.md" },
         { "Formatters" = "guide/formatters.md" },
         { "Parsers" = "guide/parsers.md" },
         { "Retry policies" = "guide/retry.md" },

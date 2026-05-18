@@ -1,6 +1,6 @@
 # Formatters
 
-Formatters convert your Pydantic models into LLM-readable text formats.
+Formatters convert your structured objects into LLM-readable text formats.
 
 ## Auto-detection
 
@@ -12,11 +12,15 @@ from sintezi.ai.formatter import auto_formatter_for_type
 formatter = auto_formatter_for_type(MyModel)
 ```
 
-This automatically selects the best formatter based on your model structure.
+This automatically selects the best formatter based on your model structure:
+
+- For regular Pydantic `BaseModel` classes, it uses **JSON** formatter
+- For `pydantic-xml` `BaseXmlModel` classes, it uses **XML** formatter
+- For plain `str` types, it passes them through directly
 
 ## Available formatters
 
-### JSON (default)
+### JSON
 
 ```python
 from sintezi.ai.formatter import JsonFormatter

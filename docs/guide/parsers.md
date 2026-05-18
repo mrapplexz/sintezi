@@ -1,6 +1,6 @@
 # Parsers
 
-Parsers validate and convert LLM responses back into typed Pydantic models.
+Parsers validate and convert LLM responses back into structured objects.
 
 ## Auto-detection
 
@@ -12,9 +12,15 @@ from sintezi.ai.parser import auto_parser_for_type
 parser = auto_parser_for_type(MyResponseModel)
 ```
 
+This automatically selects the best parser based on your model structure:
+
+- For regular Pydantic `BaseModel` classes, it uses **JSON** parser
+- For `pydantic-xml` `BaseXmlModel` classes, it uses **XML** parser
+- For plain `str` types, it returns the response as-is
+
 ## Available parsers
 
-### JSON (default)
+### JSON
 
 ```python
 from sintezi.ai.parser import JsonParser

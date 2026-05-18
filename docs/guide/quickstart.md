@@ -13,13 +13,15 @@ pip install sintezi
 ```python
 from pydantic import BaseModel
 
-class UserQuery(BaseModel):
-    question: str
-    context: str
+class ProductInfo(BaseModel):
+    name: str
+    category: str
+    key_features: list[str]
 
-class GeneratedAnswer(BaseModel):
-    answer: str
-    confidence: float
+class ProductDescription(BaseModel):
+    short_description: str
+    detailed_description: str
+    selling_points: list[str]
 ```
 
 ## 3. Create an AI context
@@ -40,40 +42,77 @@ from sintezi.ai.formatter import auto_formatter_for_type
 from sintezi.ai.parser import auto_parser_for_type
 
 config = StructuredAiCallConfig(
-    system_message="You are a helpful assistant that answers questions based on context.",
+    system_message="You are a marketing copywriter that creates engaging product descriptions.",
     parameters=AiCallParameters(
         model="gpt-4o-mini",
-        temperature=0.7,
+        temperature=0.8,
     ),
 )
 
 ai_call = StructuredAiCall(
     ctx=ctx,
     config=config,
-    formatter=auto_formatter_for_type(UserQuery),
-    parser=auto_parser_for_type(GeneratedAnswer),
+    formatter=auto_formatter_for_type(ProductInfo),
+    parser=auto_parser_for_type(ProductDescription),
     retry_policy=None,
 )
+```
+
+### Alternative: Load configuration from files
+
+You can also load the system message and parameters from separate files:
+
+```python
+from pathlib import Path
+
+# Create config files:
+# - prompts/product_writer.txt (system message)
+# - prompts/product_writer.json (AiCallParameters as JSON)
+
+ai_call = StructuredAiCall.from_files(
+    ctx=ctx,
+    path=Path("prompts/product_writer"),
+    formatter=auto_formatter_for_type(ProductInfo),
+    parser=auto_parser_for_type(ProductDescription),
+)
+```
+
+**Example files:**
+
+`prompts/product_writer.txt`:
+```
+You are a marketing copywriter that creates engaging product descriptions.
+```
+
+`prompts/product_writer.json`:
+```json
+{
+  "model": "gpt-4o-mini",
+  "temperature": 0.8
+}
 ```
 
 ## 5. Execute
 
 ```python
-query = UserQuery(
-    question="What is the capital of France?",
-    context="France is a country in Europe.",
+product = ProductInfo(
+    name="Wireless Noise-Cancelling Headphones",
+    category="Electronics",
+    key_features=["Active noise cancellation", "30-hour battery", "Bluetooth 5.0"],
 )
-result = await ai_call(query)
-print(f"Answer: {result.answer} (confidence: {result.confidence})")
+result = await ai_call(product)
+print(f"Short: {result.short_description}")
+print(f"Detailed: {result.detailed_description}")
+print(f"Selling points: {result.selling_points}")
 ```
 
 ## What happens under the hood
 
-1. **Formatting** — `UserQuery` is converted to the appropriate format (JSON by default)
+1. **Formatting** — `ProductInfo` is converted to the appropriate format (JSON by default)
 2. **API call** — Sent to OpenAI with the configured parameters
 3. **Retry logic** — Network errors and validation failures are retried separately
-4. **Parsing** — Response is validated against `GeneratedAnswer` schema
-5. **Result** — Typed Pydantic model is returned
+4. **Parsing** — Response is validated against `ProductDescription` schema
+5. **Result** — Typed, validated product description is returned
 
 ## Next steps
 

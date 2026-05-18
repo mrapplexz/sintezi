@@ -17,8 +17,8 @@ pip install sintezi
 | Concept | Description |
 |---------|-------------|
 | **AiContext** | Holds the OpenAI client and retry configuration |
-| **Formatter** | Converts Pydantic models to LLM-readable format (JSON/XML/text) |
-| **Parser** | Validates and parses LLM responses back to Pydantic models |
+| **Formatter** | Converts structured objects to LLM-readable format (JSON/XML/text) |
+| **Parser** | Validates and parses LLM responses back to structured objects |
 | **RetryPolicy** | Separate retry logic for network errors and validation failures |
 | **StructuredAiCall** | Main executor that orchestrates formatting, API calls, and parsing |
 
@@ -35,14 +35,16 @@ from sintezi.ai.parser import auto_parser_for_type
 from sintezi.ai.executor import StructuredAiCall
 
 
-class UserQuery(BaseModel):
-    question: str
-    context: str
+class ProductInfo(BaseModel):
+    name: str
+    category: str
+    key_features: list[str]
 
 
-class GeneratedAnswer(BaseModel):
-    answer: str
-    confidence: float
+class ProductDescription(BaseModel):
+    short_description: str
+    detailed_description: str
+    selling_points: list[str]
 
 
 async def main():
@@ -52,10 +54,10 @@ async def main():
 
     # Configure the AI call
     config = StructuredAiCallConfig(
-        system_message="You are a helpful assistant that answers questions based on context.",
+        system_message="You are a marketing copywriter that creates engaging product descriptions.",
         parameters=AiCallParameters(
             model="gpt-4o-mini",
-            temperature=0.7,
+            temperature=0.8,
         ),
     )
 
@@ -63,18 +65,21 @@ async def main():
     ai_call = StructuredAiCall(
         ctx=ctx,
         config=config,
-        formatter=auto_formatter_for_type(UserQuery),
-        parser=auto_parser_for_type(GeneratedAnswer),
+        formatter=auto_formatter_for_type(ProductInfo),
+        parser=auto_parser_for_type(ProductDescription),
         retry_policy=None,  # Use default retry policy
     )
 
     # Execute
-    query = UserQuery(
-        question="What is the capital of France?",
-        context="France is a country in Europe.",
+    product = ProductInfo(
+        name="Wireless Noise-Cancelling Headphones",
+        category="Electronics",
+        key_features=["Active noise cancellation", "30-hour battery", "Bluetooth 5.0"],
     )
-    result = await ai_call(query)
-    print(f"Answer: {result.answer} (confidence: {result.confidence})")
+    result = await ai_call(product)
+    print(f"Short: {result.short_description}")
+    print(f"Detailed: {result.detailed_description}")
+    print(f"Selling points: {result.selling_points}")
 
 
 asyncio.run(main())
@@ -91,6 +96,7 @@ asyncio.run(main())
 ## Next steps
 
 - [Quick start guide](guide/quickstart.md) — detailed walkthrough
+- [Executors](guide/executors.md) — available AI call executors
 - [Formatters](guide/formatters.md) — JSON, XML, and custom formats
 - [Parsers](guide/parsers.md) — response parsing and validation
 - [Retry policies](guide/retry.md) — configuring retry behavior
