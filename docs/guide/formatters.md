@@ -25,17 +25,17 @@ This automatically selects the best formatter based on your model structure:
 ```python
 from sintezi.ai.formatter import JsonFormatter
 
-formatter = JsonFormatter(model=MyModel)
+formatter = JsonFormatter()
 ```
 
-Most compatible with OpenAI's structured output format.
+Most compatible with OpenAI's structured output format. Optionally pass `indent=2` for pretty-printed output.
 
 ### XML
 
 ```python
 from sintezi.ai.formatter import XmlFormatter
 
-formatter = XmlFormatter(model=MyModel)
+formatter = XmlFormatter()
 ```
 
 Requires `pydantic-xml`. Useful for complex nested structures.
@@ -45,7 +45,7 @@ Requires `pydantic-xml`. Useful for complex nested structures.
 ```python
 from sintezi.ai.formatter import StrFormatter
 
-formatter = StrFormatter(model=str)
+formatter = StrFormatter()
 ```
 
 For simple string-based inputs.
@@ -61,9 +61,8 @@ from typing import TypeVar
 T = TypeVar("T")
 
 class MyCustomFormatter(RequestFormatter[T]):
-    def format(self, data: T) -> str:
-        # Convert data to string format
-        return str(data)
+    def format(self, content: T) -> str:
+        return str(content)
 ```
 
 ## Next steps

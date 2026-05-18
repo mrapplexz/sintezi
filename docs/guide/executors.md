@@ -85,8 +85,6 @@ from sintezi.ai.executor import AiCallParameters
 params = AiCallParameters(
     model="gpt-4o-mini",
     temperature=0.7,
-    max_tokens=1000,
-    top_p=1.0,
 )
 ```
 

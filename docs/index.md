@@ -67,7 +67,7 @@ async def main():
         config=config,
         formatter=auto_formatter_for_type(ProductInfo),
         parser=auto_parser_for_type(ProductDescription),
-        retry_policy=None,  # Use default retry policy
+        retry_policy=None,
     )
 
     # Execute

@@ -23,9 +23,9 @@ This automatically selects the best parser based on your model structure:
 ### JSON
 
 ```python
-from sintezi.ai.parser import JsonParser
+from sintezi.ai.parser import JsonParser, JsonResponseFormat
 
-parser = JsonParser(model=MyResponseModel)
+parser = JsonParser(model_type=MyResponseModel, response_format=JsonResponseFormat.json_schema)
 ```
 
 Works with OpenAI's `response_format` for structured outputs.
@@ -35,7 +35,7 @@ Works with OpenAI's `response_format` for structured outputs.
 ```python
 from sintezi.ai.parser import XmlParser
 
-parser = XmlParser(model=MyResponseModel)
+parser = XmlParser(model_type=MyResponseModel)
 ```
 
 Requires `pydantic-xml`.
@@ -64,13 +64,15 @@ from typing import TypeVar
 
 T = TypeVar("T")
 
-class MyCustomParser(ResponseParser[T]):
-    def validate(self, content: str) -> T:
-        # Parse and validate content
-        return self.model.model_validate_json(content)
-    
+class MyCustomParser(ResponseParser[str]):
+    @property
+    def returns(self) -> type[str]:
+        return str
+
+    def validate(self, content: str) -> str:
+        return content.strip()
+
     def to_response_format(self, capabilities: set[ResponseFormatCapability]) -> dict | None:
-        # Return OpenAI response_format config or None
         return None
 ```
 
