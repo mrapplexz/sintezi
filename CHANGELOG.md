@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v0.2.0 (2026-05-25)
+
+### Documentation
+
+- Improve project documentation and presentation
+  ([`2f24e36`](https://github.com/mrapplexz/sintezi/commit/2f24e36cca8d66a66b3d4ae44477102af14da9d6))
+
+### Features
+
+- Improve project documentation and presentation
+  ([`2f24e36`](https://github.com/mrapplexz/sintezi/commit/2f24e36cca8d66a66b3d4ae44477102af14da9d6))
+
+
 ## v0.1.0 (2026-05-11)
 
 ### Features
