@@ -78,11 +78,23 @@ class StructuredAiCall(Generic[TRequest, TResponse]):
                 model=self._config.parameters.model,
                 temperature=self._config.parameters.temperature,
             )
-            content = result.choices[0].message.content
+            if not result.choices:
+                exc = ValueError("Got no choices from AI provider")
+                exc.add_note(str(result))
+                raise exc
+
+            message = result.choices[0].message
+
+            if message is None:
+                exc = ValueError("Got no message from AI provider")
+                exc.add_note(str(result))
+                raise exc
+
+            content = message.content
 
             if content is None:
                 exc = ValueError("Got empty content from AI provider")
-                exc.add_note(str(content))
+                exc.add_note(str(result))
                 raise exc
 
             return self._parser.validate(content)
