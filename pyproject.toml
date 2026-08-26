@@ -1,6 +1,6 @@
 [project]
 name = "sintezi"
-version = "0.2.0"
+version = "0.2.1"
 description = "Synthetic data generation that actually doesn't hurt."
 readme = "README.md"
 authors = [

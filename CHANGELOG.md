@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.2.1 (2026-08-26)
+
+### Bug Fixes
+
+- Malformed responses processing
+  ([`5f7d668`](https://github.com/mrapplexz/sintezi/commit/5f7d668649b8a0c5a29b2fac59420aa0965f8194))
+
+
 ## v0.2.0 (2026-05-25)
 
 ### Documentation
